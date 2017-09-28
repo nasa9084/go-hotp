@@ -39,14 +39,6 @@ func counterToBytes(c uint64) []byte {
 	return t
 }
 
-func stToNum(b byte) int64 {
-	i, err := strconv.ParseInt(string(b), 2, 0)
-	if err != nil {
-		panic(err)
-	}
-	return i
-}
-
 func hmacSHA1(k, c []byte) (hs []byte) {
 	mac := hmac.New(sha1.New, k)
 	mac.Write(c)
