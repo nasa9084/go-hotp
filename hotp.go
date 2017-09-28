@@ -4,14 +4,13 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/binary"
-	"encoding/hex"
-	"fmt"
 	"math"
 	"strconv"
 )
 
 const (
 	fourBitMask      = 0xf
+	eightBitMask     = 0xff
 	thirtyOneBitMask = 0x7fffffff
 )
 
@@ -25,7 +24,6 @@ type Generator struct {
 // Generate HOTP
 func (g *Generator) Generate() int64 {
 	hs := hmacSHA1([]byte(g.Secret), counterToBytes(g.Counter))
-	fmt.Print(hex.EncodeToString(hs))
 	snum := truncate(hs)
 	d := int64(snum) % int64(math.Pow10(g.Digit))
 	g.Counter++
@@ -33,7 +31,12 @@ func (g *Generator) Generate() int64 {
 }
 
 func counterToBytes(c uint64) []byte {
-	return []byte(strconv.FormatUint(c, 16))
+	t := make([]byte, 8)
+	for i := 7; i >= 0; i-- {
+		t[i] = byte(c & eightBitMask)
+		c = c >> 8
+	}
+	return t
 }
 
 func stToNum(b byte) int64 {
