@@ -5,7 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/binary"
 	"math"
-	"strconv"
 )
 
 const (
